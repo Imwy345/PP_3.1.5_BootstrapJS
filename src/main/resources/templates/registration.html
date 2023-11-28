@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+</head>
+<body>
+
+<div>
+    <form th:action="@{/registration}" th:object="${userForm}" method="post">
+        <h2>Registration</h2>
+
+        <div>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" th:field="*{username}" required/>
+            <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+            <span th:text="${usernameError}"></span>
+        </div>
+
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" th:field="*{password}" required/>
+        </div>
+
+        <div>
+            <label for="passwordConfirm">Confirm Password:</label>
+            <input type="password" id="passwordConfirm" name="passwordConfirm" th:field="*{passwordConfirm}" required/>
+            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+            <span th:text="${passwordError}"></span>
+        </div>
+        <div>
+            <label for="role">Role:</label>
+            <select id="role" name="role">
+                <option value="ROLE_USER">USER</option>
+                <option value="ROLE_ADMIN">ADMIN</option>
+            </select><br/>
+        </div>
+
+        <button type="submit">Register</button>
+    </form>
+
+    <a href="/">Home</a>
+</div>
+
+</body>
+</html>
