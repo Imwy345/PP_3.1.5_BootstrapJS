@@ -1,20 +1,21 @@
 package ru.kata.spring.boot_security.demo.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.service.UserService;
-import ru.kata.spring.boot_security.demo.user.User;
-
+import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 import javax.validation.Valid;
 
 @Controller
 public class RegistrationController {
 
-    @Autowired
-    private UserService userService;
+    private final UserServiceImpl userServiceImpl;
+
+    public RegistrationController(UserServiceImpl userServiceImpl) {
+        this.userServiceImpl = userServiceImpl;
+    }
 
     @GetMapping("/")
     public String showLoginPage() {
@@ -40,7 +41,7 @@ public class RegistrationController {
             model.addAttribute("passwordError", "Пароли не совпадают");
             return "registration";
         }
-        if (!userService.saveUser(userForm, roleName)){
+        if (!userServiceImpl.saveUser(userForm, roleName)){
             model.addAttribute("usernameError", "Пользователь с таким именем уже существует");
             return "registration";
         }
