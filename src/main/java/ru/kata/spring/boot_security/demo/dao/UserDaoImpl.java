@@ -15,6 +15,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class UserDaoImpl implements UserDao, UserDetailsService {
@@ -67,7 +68,7 @@ public class UserDaoImpl implements UserDao, UserDetailsService {
     }
     @Override
     @Transactional
-    public boolean saveUser(User user, String roleName) {
+    public boolean saveUser(User user) {
         TypedQuery<User> userQuery = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class);
         userQuery.setParameter("username", user.getUsername());
 
@@ -79,20 +80,19 @@ public class UserDaoImpl implements UserDao, UserDetailsService {
             // Если пользователя с таким именем нет, продолжаем сохранение
         }
 
-        TypedQuery<Role> roleQuery = entityManager.createQuery("SELECT r FROM Role r WHERE r.name = :name", Role.class);
-        roleQuery.setParameter("name", roleName);
-
-        Role role;
-        try {
-            role = roleQuery.getSingleResult();
-        } catch (NoResultException e) {
-            // Если роли с таким именем нет, создаем новую
-            role = new Role();
-            role.setName(roleName);
-            entityManager.persist(role);
-        }
-
-        user.setRoles(Collections.singleton(role));
+//        TypedQuery<Role> roleQuery = entityManager.createQuery("SELECT r FROM Role r WHERE r.name = :name", Role.class);
+//        roleQuery.setParameter("name", roleNames);
+//
+//        Role role;
+//        try {
+//            role = roleQuery.getSingleResult();
+//        } catch (NoResultException e) {
+//            // Если роли с таким именем нет, создаем новую
+//            role = new Role();
+//            role.setName(roleName);
+//            entityManager.persist(role);
+//        }
+//        user.setRoles(Collections.singleton(role));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         entityManager.persist(user);
         return true;

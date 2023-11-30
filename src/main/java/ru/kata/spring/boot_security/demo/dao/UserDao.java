@@ -1,8 +1,10 @@
 package ru.kata.spring.boot_security.demo.dao;
 
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserDao {
 
@@ -11,5 +13,5 @@ public interface UserDao {
     void addUser(User user);
     void removeUser(long id);
     void updateUser(User user);
-    boolean saveUser(User user,String roleName);
+    boolean saveUser(User user);
 }
