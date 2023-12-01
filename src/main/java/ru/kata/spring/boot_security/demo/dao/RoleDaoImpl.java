@@ -41,4 +41,10 @@ public class RoleDaoImpl implements RoleDao{
         return roles;
     }
 
+    @Override
+    @Transactional
+    public Role saveRole(Role role) {
+        return entityManager.merge(role);
+    }
+
 }

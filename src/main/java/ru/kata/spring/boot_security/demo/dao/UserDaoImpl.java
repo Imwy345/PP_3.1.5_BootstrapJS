@@ -64,14 +64,22 @@ public class UserDaoImpl implements UserDao {
 
         try {
             User userFromDB = userQuery.getSingleResult();
-            // Если пользователь с таким именем уже существует, возвращаем false
             return false;
         } catch (NoResultException e) {
-            // Если пользователя с таким именем нет, продолжаем сохранение
         }
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         entityManager.persist(user);
         return true;
+    }
+    @Override
+    public User findByUsername(String username) throws UsernameNotFoundException {
+        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class);
+        query.setParameter("username", username);
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
 }

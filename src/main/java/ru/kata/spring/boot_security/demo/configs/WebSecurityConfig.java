@@ -29,8 +29,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
                     .disable()
                     .authorizeRequests()
                     .antMatchers("/","/registration").not().fullyAuthenticated()
-                    .antMatchers("/admin/**").hasRole("ADMIN")
-                    .antMatchers("/user/**").hasAnyRole("USER","ADMIN")
+                    .antMatchers("/admin/**").hasAnyRole("ADMIN")
+                    .antMatchers("/user/**").hasAnyRole("USER")/*hasAnyRole("USER","ADMIN")*/
                     .anyRequest().authenticated()
                     .and()
                     .formLogin()

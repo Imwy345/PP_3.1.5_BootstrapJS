@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.service;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,16 +12,19 @@ import ru.kata.spring.boot_security.demo.model.User;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserDao userDao;
-    EntityManager entityManager;
+    private final EntityManager entityManager;
 
-    public UserServiceImpl(UserDao userDao) {
+    public UserServiceImpl(UserDao userDao, EntityManager entityManager) {
         this.userDao = userDao;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -57,13 +61,31 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public User findByUsername(String username) {
+        return userDao.findByUsername(username);
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class);
         query.setParameter("username", username);
+
         try {
-            return query.getSingleResult();
+            User user = query.getSingleResult();
+            // Пользователь успешно загружен
+            System.out.println("Loaded user: " + user.getUsername());
+            // Отображение ролей пользователя
+            Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+            List<String> roleNames = authorities.stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+
+            System.out.println("User roles: " + roleNames);
+
+
+            return user;
         } catch (NoResultException e) {
-            return null;
+            throw new UsernameNotFoundException("User not found with username: " + username, e);
         }
     }
 }
