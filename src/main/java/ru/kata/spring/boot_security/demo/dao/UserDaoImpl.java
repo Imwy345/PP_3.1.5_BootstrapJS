@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public class UserDaoImpl implements UserDao, UserDetailsService {
+public class UserDaoImpl implements UserDao {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -57,16 +57,6 @@ public class UserDaoImpl implements UserDao, UserDetailsService {
 
     }
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class);
-        query.setParameter("username", username);
-        try {
-            return query.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
-    @Override
     @Transactional
     public boolean saveUser(User user) {
         TypedQuery<User> userQuery = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class);
@@ -79,20 +69,6 @@ public class UserDaoImpl implements UserDao, UserDetailsService {
         } catch (NoResultException e) {
             // Если пользователя с таким именем нет, продолжаем сохранение
         }
-
-//        TypedQuery<Role> roleQuery = entityManager.createQuery("SELECT r FROM Role r WHERE r.name = :name", Role.class);
-//        roleQuery.setParameter("name", roleNames);
-//
-//        Role role;
-//        try {
-//            role = roleQuery.getSingleResult();
-//        } catch (NoResultException e) {
-//            // Если роли с таким именем нет, создаем новую
-//            role = new Role();
-//            role.setName(roleName);
-//            entityManager.persist(role);
-//        }
-//        user.setRoles(Collections.singleton(role));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         entityManager.persist(user);
         return true;
