@@ -40,7 +40,6 @@ public class RegistrationController {
     public String addUser(@ModelAttribute("userForm") @Valid User userForm,
                           @RequestParam("role") List<String> roleNames,
                           BindingResult bindingResult, Model model) {
-
         userForm.setRoles(roleServiceImpl.validateRoles(roleNames));
         userServiceImpl.saveUser(userForm);
 
