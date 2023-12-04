@@ -1,4 +1,4 @@
-package ru.kata.spring.boot_security.demo.configs;
+package ru.kata.spring.boot_security.demo.init;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -16,17 +16,15 @@ import java.util.*;
 @Component
 public class DataInitializer implements CommandLineRunner {
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserServiceImpl userService;
     private final RoleServiceImpl roleService;
 
-    public DataInitializer(BCryptPasswordEncoder bCryptPasswordEncoder, UserServiceImpl userService, RoleServiceImpl roleService) {
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    public DataInitializer( UserServiceImpl userService, RoleServiceImpl roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         initializeRoles();
         initializeUsers();
     }
@@ -53,27 +51,25 @@ public class DataInitializer implements CommandLineRunner {
 
     private void createUser(String username, String password, List<String> roleNames) {
         User user = userService.findByUsername(username);
-        if (user == null) {
-            Set<Role> roles = new HashSet<>();
-            for (String roleName : roleNames) {
-                Role role = roleService.findRoleByName(roleName);
-                if (role != null) {
-                    roles.add(role);
-                }
-            }
+        Set<Role> roles = null;
+        if( user == null) {
+            roles = roleService.validateRoles(roleNames);
+        }
+//        if (user == null) {
+//            Set<Role> roles = new HashSet<>();
+//            for (String roleName : roleNames) {
+//                Role role = roleService.findRoleByName(roleName);
+//                if (role != null) {
+//                    roles.add(role);
+//                }
+//            }
 
             user = new User();
             user.setUsername(username);
-
-            if (bCryptPasswordEncoder != null) {
-                String encodedPassword = bCryptPasswordEncoder.encode(password);
-                user.setPassword(encodedPassword);
-            }
-
+            user.setPassword(password);
             user.setRoles(roles);
 
             userService.saveUser(user);
         }
     }
 
-}
