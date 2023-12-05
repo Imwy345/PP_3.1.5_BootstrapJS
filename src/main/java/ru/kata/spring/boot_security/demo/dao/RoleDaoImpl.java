@@ -19,6 +19,12 @@ public class RoleDaoImpl implements RoleDao{
     private EntityManager entityManager;
 
     @Override
+    public List<Role> getAllRoles() {
+        TypedQuery<Role> query = entityManager.createQuery("SELECT r FROM Role r", Role.class);
+        return query.getResultList();
+    }
+
+    @Override
     public Role findRoleByName(String roleName) {
         TypedQuery<Role> roleQuery = entityManager.createQuery("SELECT r FROM Role r WHERE r.name = :name", Role.class);
         roleQuery.setParameter("name", roleName);
@@ -43,8 +49,6 @@ public class RoleDaoImpl implements RoleDao{
 
     @Override
     @Transactional
-    public Role saveRole(Role role) {
-        return entityManager.merge(role);
-    }
+    public void saveRole(Role role) {entityManager.persist(role);}
 
 }

@@ -1,35 +1,20 @@
 package ru.kata.spring.boot_security.demo.dao;
 
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public class UserDaoImpl implements UserDao {
 
     @PersistenceContext
     private EntityManager entityManager;
-
-
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    public UserDaoImpl( BCryptPasswordEncoder bCryptPasswordEncoder) {
-
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
 
     @Override
     public List<User> getAllUsers() {
@@ -38,12 +23,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User getUserById(long id) {
-        return entityManager.find(User.class,id);
-    }
-
-    @Override
-    public void addUser(User user) {
-        entityManager.persist(user);
+        return entityManager.find(User.class, id);
     }
 
     @Override
@@ -56,8 +36,8 @@ public class UserDaoImpl implements UserDao {
         entityManager.merge(user);
 
     }
+
     @Override
-    @Transactional
     public boolean saveUser(User user) {
         TypedQuery<User> userQuery = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class);
         userQuery.setParameter("username", user.getUsername());
@@ -67,13 +47,13 @@ public class UserDaoImpl implements UserDao {
             return false;
         } catch (NoResultException e) {
         }
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         entityManager.persist(user);
         return true;
     }
+
     @Override
     public User findByUsername(String username) throws UsernameNotFoundException {
-        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class);
+        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.username = :username", User.class);
         query.setParameter("username", username);
         try {
             return query.getSingleResult();

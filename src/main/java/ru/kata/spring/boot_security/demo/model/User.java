@@ -2,7 +2,6 @@ package ru.kata.spring.boot_security.demo.model;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -21,7 +20,7 @@ public class User implements UserDetails {
     private String password;
     @Transient
     private String passwordConfirm;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     private Set<Role> roles;
 
     public User() {

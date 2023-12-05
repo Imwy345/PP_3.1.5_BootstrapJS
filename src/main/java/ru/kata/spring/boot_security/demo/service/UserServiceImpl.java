@@ -1,30 +1,25 @@
 package ru.kata.spring.boot_security.demo.service;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.dao.UserDao;
 import ru.kata.spring.boot_security.demo.model.User;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserDao userDao;
-    private final EntityManager entityManager;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserServiceImpl(UserDao userDao, EntityManager entityManager) {
+    public UserServiceImpl(UserDao userDao, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userDao = userDao;
-        this.entityManager = entityManager;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
@@ -35,12 +30,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User getUserById(long id) {
         return userDao.getUserById(id);
-    }
-
-    @Override
-    @Transactional
-    public void addUser(User user) {
-        userDao.addUser(user);
     }
 
     @Override
@@ -56,7 +45,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public boolean saveUser(User user) {
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         return  userDao.saveUser(user);
     }
 
@@ -66,26 +57,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        TypedQuery<User> query = entityManager.createQuery("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles WHERE u.username = :username", User.class);
-        query.setParameter("username", username);
+            return userDao.findByUsername(username);
 
-        try {
-            User user = query.getSingleResult();
-            // Пользователь успешно загружен
-            System.out.println("Loaded user: " + user.getUsername());
-            // Отображение ролей пользователя
-            Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
-            List<String> roleNames = authorities.stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList());
-
-            System.out.println("User roles: " + roleNames);
-
-
-            return user;
-        } catch (NoResultException e) {
-            throw new UsernameNotFoundException("User not found with username: " + username, e);
-        }
     }
 }

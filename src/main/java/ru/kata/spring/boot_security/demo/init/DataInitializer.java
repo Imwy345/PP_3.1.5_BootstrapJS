@@ -55,15 +55,6 @@ public class DataInitializer implements CommandLineRunner {
         if( user == null) {
             roles = roleService.validateRoles(roleNames);
         }
-//        if (user == null) {
-//            Set<Role> roles = new HashSet<>();
-//            for (String roleName : roleNames) {
-//                Role role = roleService.findRoleByName(roleName);
-//                if (role != null) {
-//                    roles.add(role);
-//                }
-//            }
-
             user = new User();
             user.setUsername(username);
             user.setPassword(password);

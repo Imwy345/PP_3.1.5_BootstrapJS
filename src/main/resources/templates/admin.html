@@ -5,25 +5,91 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admins and Users</title>
-  <div th:fragment="header">
-    <nav>
-      <ul>
-        <li><a th:href="@{/logout}">Logout</a></li>
-      </ul>
-    </nav>
-  </div>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    nav {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+    }
+
+    nav ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+
+    nav li {
+      margin-right: 10px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 30px; /* Увеличение отступа сверху */
+    }
+
+    table {
+      margin-top: 20px;
+      width: 70%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid black;
+      padding: 12px; /* Увеличение отступов */
+      text-align: left;
+    }
+
+    .buttonUpdate, .buttonDelete {
+      width: 100%; /* Занимать всю ширину ячейки */
+      background-color: #008CBA;
+      color: white;
+      border: none;
+      padding: 10px; /* Увеличение отступов */
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 14px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
 
-<h2>Admin - Users</h2>
 
-<table border="1">
+<h2>Admin - Users</h2>
+<div>
+  <nav>
+    <ul>
+      <li><a th:href="@{/admin/new}">Add new user</a></li>
+    </ul>
+    <ul>
+      <li style="margin-right: 10%;">
+        <a th:href="@{/logout}">Logout</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+<table>
   <thead>
   <tr>
     <th>ID</th>
     <th>USERNAME</th>
     <th>PASSWORD</th>
     <th>ROLES</th>
+    <th>Update</th>
+    <th>Delete</th>
   </tr>
   </thead>
   <tbody>
@@ -33,15 +99,19 @@
     <td th:text="${user.password}"></td>
     <td>
       <span th:each="role : ${user.roles}" th:text="${role.name}"></span>
+    </td>
+    <td>
+      <form th:action="@{'update/' + ${user.id}}">
+        <input type="submit" class="buttonUpdate" value="Update"/>
+      </form>
+    </td>
     <td>
       <form th:method="DELETE" th:action="@{'delete/' + ${user.id}}">
         <input type="submit" class="buttonDelete" value="Delete"/>
       </form>
     </td>
-    </td>
   </tr>
   </tbody>
 </table>
-
 </body>
 </html>

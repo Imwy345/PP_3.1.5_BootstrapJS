@@ -9,7 +9,7 @@
 <body>
 
 <div>
-    <form th:action="@{/registration}" th:object="${userForm}" method="post">
+    <form th:action="@{/admin/new}" th:object="${userForm}" method="post">
         <h2>Registration</h2>
 
         <div>
@@ -31,17 +31,17 @@
             <span th:text="${passwordError}"></span>
         </div>
         <div>
-            <label for="role">Role:</label>
-            <select id="role" name="role">
-                <option value="ROLE_USER">USER</option>
-                <option value="ROLE_ADMIN">ADMIN</option>
-            </select><br/>
+            <label>Roles:</label>
+            <div th:each="role : ${roles}">
+                <input type="checkbox" id="role-${role.name}" name="roles" th:value="${role.name}"/>
+                <label th:for="${'role-' + role.name}" th:text="${role.name}"></label>
+            </div>
         </div>
 
         <button type="submit">Register</button>
     </form>
 
-    <a href="/">Home</a>
+    <a href="/admin/">Home</a>
 </div>
 
 </body>
