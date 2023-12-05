@@ -1,7 +1,6 @@
 package ru.kata.spring.boot_security.demo.dao;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.Role;
 
 import javax.persistence.EntityManager;
@@ -48,7 +47,6 @@ public class RoleDaoImpl implements RoleDao{
     }
 
     @Override
-    @Transactional
     public void saveRole(Role role) {entityManager.persist(role);}
 
 }

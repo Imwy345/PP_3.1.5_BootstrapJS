@@ -6,8 +6,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.service.RoleServiceImpl;
-import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
+import ru.kata.spring.boot_security.demo.service.RoleService;
+import ru.kata.spring.boot_security.demo.service.UserService;
+
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -18,26 +19,25 @@ import java.util.Set;
 @RequestMapping("/admin")
 public class AdminController {
 
-    private final UserServiceImpl userServiceImpl;
-    private final RoleServiceImpl roleServiceImpl;
+    private final UserService userService;
+    private final RoleService roleService;
 
-    public AdminController(UserServiceImpl userServiceImpl, RoleServiceImpl roleServiceImpl) {
-        this.userServiceImpl = userServiceImpl;
-
-        this.roleServiceImpl = roleServiceImpl;
+    public AdminController(UserService userService, RoleService roleService) {
+        this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping("/")
     public String showAllUsers(Model model) {
-        model.addAttribute("users", userServiceImpl.getAllUsers());
+        model.addAttribute("users", userService.getAllUsers());
         return "admin";
     }
 
     @GetMapping("/new")
     public String showRegistrationForm(Model model) {
-        List<Role> roles = roleServiceImpl.getAllRoles();
+//        List<Role> roles = roleService.getAllRoles();
         model.addAttribute("userForm", new User());
-        model.addAttribute("roles", roles);
+        model.addAttribute("roles", roleService.getAllRoles());
         return "addNewUser";
     }
 
@@ -45,31 +45,34 @@ public class AdminController {
     public String registerUser(@ModelAttribute("userForm") @Valid User userForm,
                                @RequestParam("roles") List<String> roleNames,
                                BindingResult bindingResult, Model model) {
-        userForm.setRoles(roleServiceImpl.validateRoles(roleNames));
-        if (bindingResult.hasErrors()) {
-            return "addNewUser";
-        }
         if (!userForm.getPassword().equals(userForm.getPasswordConfirm())) {
             model.addAttribute("passwordError", "Пароли не совпадают");
+            model.addAttribute("roles",roleService.getAllRoles());
             return "addNewUser";
         }
-        if (!userServiceImpl.saveUser(userForm)) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("roles",roleService.getAllRoles());
+            return "addNewUser";
+        }
+        if (!userService.saveUser(userForm)) {
             model.addAttribute("usernameError", "Пользователь с таким именем уже существует");
+            model.addAttribute("roles",roleService.getAllRoles());
             return "addNewUser";
         } else {
+            userForm.setRoles(roleService.validateRoles(roleNames));
             return "redirect:/admin/";
         }
     }
 
     @GetMapping("/{id}")
     public String getUser(@PathVariable("id") long id, Model model) {
-        model.addAttribute("user", userServiceImpl.getUserById(id));
+        model.addAttribute("user", userService.getUserById(id));
         return "userAdmin";
     }
 
     @GetMapping("/update/{id}")
     public String showUpdateForm(@PathVariable("id") Long id, Model model) {
-        User user = userServiceImpl.getUserById(id);
+        User user = userService.getUserById(id);
         Set<Role> userRoles = user.getRoles();
         List<String> roleNames = new ArrayList<>();
 
@@ -78,7 +81,7 @@ public class AdminController {
         }
 
         model.addAttribute("userForm", user);
-        model.addAttribute("roles", roleServiceImpl.getAllRoles());
+        model.addAttribute("roles", roleService.getAllRoles());
         model.addAttribute("userRoles", roleNames);
 
         return "update";
@@ -89,15 +92,14 @@ public class AdminController {
                              @RequestParam("roles") List<String> roleNames,
                              @PathVariable("id") Long userId) {
 
-        User user = userServiceImpl.getUserById(userId);
-        user.setRoles(roleServiceImpl.validateRoles(roleNames));
+        User user = userService.getUserById(userId);
+        user.setRoles(roleService.validateRoles(roleNames));
         user.setUsername(userForm.getUsername());
         if (user.getPassword().equals(userForm.getPassword())) {
-            user.setPassword(userForm.getPassword());
-            userServiceImpl.updateUser(user);
+            userService.updateUser(user);
         } else {
             user.setPassword(userForm.getPassword());
-            userServiceImpl.saveUser(user);
+            userService.saveUser(user);
         }
         return "redirect:/admin/";
 
@@ -105,7 +107,7 @@ public class AdminController {
 
     @PostMapping("/delete/{id}")
     public String deleteUser(@PathVariable("id") long id) {
-        userServiceImpl.removeUser(id);
+        userService.removeUser(id);
         return "redirect:/admin/";
     }
 }
