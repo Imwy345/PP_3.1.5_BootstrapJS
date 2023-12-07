@@ -28,7 +28,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
                     .csrf()
                     .disable()
                     .authorizeRequests()
-                    .antMatchers("/","/registration").not().fullyAuthenticated()
+                    .antMatchers("/").not().fullyAuthenticated()
                     .antMatchers("/admin/**").hasAnyRole("ADMIN")
                     .antMatchers("/user/**").hasAnyRole("USER")/*hasAnyRole("USER","ADMIN")*/
                     .anyRequest().authenticated()
@@ -44,8 +44,4 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
                     .permitAll();
         }
 
-//        @Autowired
-//        protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//            auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder());
-//        }
     }

@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.controller;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,41 +29,48 @@ public class AdminController {
     }
 
     @GetMapping("/")
-    public String showAllUsers(Model model) {
+    public String showAllUsers(Model model, Authentication authentication) {
+
+        model.addAttribute("user",userService.findByUsername(authentication.getName()));
         model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("newUser", new User());
+        model.addAttribute("roles", roleService.getAllRoles());
         return "admin";
     }
 
-    @GetMapping("/new")
-    public String showRegistrationForm(Model model) {
-//        List<Role> roles = roleService.getAllRoles();
-        model.addAttribute("userForm", new User());
-        model.addAttribute("roles", roleService.getAllRoles());
-        return "addNewUser";
-    }
 
-    @PostMapping("/new")
-    public String registerUser(@ModelAttribute("userForm") @Valid User userForm,
+
+    @PostMapping("/")
+    public String registerUser(@ModelAttribute("newUser") @Valid User newUser,
                                @RequestParam("roles") List<String> roleNames,
                                BindingResult bindingResult, Model model) {
-        if (!userForm.getPassword().equals(userForm.getPasswordConfirm())) {
-            model.addAttribute("passwordError", "Пароли не совпадают");
-            model.addAttribute("roles",roleService.getAllRoles());
-            return "addNewUser";
+//        if (!newUser.getPassword().equals(newUser.getPasswordConfirm())) {
+//            model.addAttribute("passwordError", "Пароли не совпадают");
+//            model.addAttribute("roles",roleService.getAllRoles());
+//            return "addNewUser";
+//        }
+//        if (bindingResult.hasErrors()) {
+//            model.addAttribute("roles",roleService.getAllRoles());
+//            return "addNewUser";
+//        }
+//        if (!userService.saveUser(newUser)) {
+//            model.addAttribute("usernameError", "Пользователь с таким именем уже существует");
+//            model.addAttribute("roles",roleService.getAllRoles());
+//            return "addNewUser";
+//        } else {
+        if(newUser!=null ){
+            System.out.println("Username:" +newUser.getUsername() + " Password: " +newUser.getPassword());
         }
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("roles",roleService.getAllRoles());
-            return "addNewUser";
+        if (roleNames != null) {
+            System.out.println("Selected roles: " + roleNames);
+            // Или использовать другие средства вывода информации (например, System.out.printf)
         }
-        if (!userService.saveUser(userForm)) {
-            model.addAttribute("usernameError", "Пользователь с таким именем уже существует");
-            model.addAttribute("roles",roleService.getAllRoles());
-            return "addNewUser";
-        } else {
-            userForm.setRoles(roleService.validateRoles(roleNames));
+            newUser.setRoles(roleService.validateRoles(roleNames));
+            userService.saveUser(newUser);
+
             return "redirect:/admin/";
         }
-    }
+//    }
 
     @GetMapping("/{id}")
     public String getUser(@PathVariable("id") long id, Model model) {
@@ -105,9 +113,16 @@ public class AdminController {
 
     }
 
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/")
     public String deleteUser(@PathVariable("id") long id) {
         userService.removeUser(id);
         return "redirect:/admin/";
     }
 }
+//    @GetMapping("/new")
+//    public String showRegistrationForm(Model model) {
+////        List<Role> roles = roleService.getAllRoles();
+//        model.addAttribute("userForm", new User());
+//        model.addAttribute("roles", roleService.getAllRoles());
+//        return "addNewUser";
+//    }

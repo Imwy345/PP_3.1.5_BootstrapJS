@@ -41,6 +41,9 @@ public class Role implements GrantedAuthority {
     public String getName() {
         return name;
     }
+    public String getNameWithoutRole() {
+        return name.substring(5);
+    }
 
     public void setName(String name) {
         this.name = name;
