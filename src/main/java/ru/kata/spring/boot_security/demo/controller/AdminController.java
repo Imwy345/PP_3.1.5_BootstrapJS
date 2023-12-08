@@ -63,7 +63,6 @@ public class AdminController {
         }
         if (roleNames != null) {
             System.out.println("Selected roles: " + roleNames);
-            // Или использовать другие средства вывода информации (например, System.out.printf)
         }
             newUser.setRoles(roleService.validateRoles(roleNames));
             userService.saveUser(newUser);
