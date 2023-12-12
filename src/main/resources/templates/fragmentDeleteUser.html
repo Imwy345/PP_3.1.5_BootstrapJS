@@ -1,63 +1,63 @@
 <div th:fragment="fragmentDeleteUser" th:remove="tag">
 
-<div class="modal fade" th:id="'deleteModal-' + ${user.id}" tabindex="-1" role="dialog"
-     aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Delete user</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="text-center mx-auto">
-                    <div class="form-group">
-                        <label for="ID" class="font-weight-bold" style="font-size: 18px;" >ID:</label>
-                        <div>
-                            <input type="text" id="ID" name="ID"
-                                   th:value="${user.id}" readonly/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="username" class="font-weight-bold" style="font-size: 18px;">Username:</label>
-                        <div>
-                            <input type="text" id="username" name="username"
-                                   th:value="${user.username}" readonly/>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password" class="font-weight-bold" style="font-size: 18px;">Password:</label>
-                        <div>
-                            <input type="password" id="password" name="password"
-                                   th:value="${user.password}" readonly/>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="font-weight-bold" style="font-size: 18px;">Roles:</label>
-                        <div th:each="role : ${roles}">
-                            <input type="checkbox" id="role-${role.name}" name="roles"
-                                   th:value="${role.name}"
-                                   th:checked="${user.roles.contains(role)}" disabled="disabled"/>
-                            <label th:for="${'role-' + role.name}"
-                                   th:text="${role.getNameWithoutRole()}" ></label>
-                        </div>
-                    </div>
-            </div>
-            <form th:method="post" th:action="@{/admin/}">
-                <input type="hidden" name="_method" th:value="delete"/>
-                <input type="hidden" name="id" th:value="${user.id}"/>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                        Cancel
+    <div class="modal fade" th:id="'deleteModal-' + ${user.id}" tabindex="-1" role="dialog"
+         aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Delete user</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
                     </button>
-                    <input type="submit" class="btn btn-danger" value="Delete"/>
                 </div>
-            </form>
+                <div class="modal-body">
+                    <div class="text-center mx-auto">
+                        <div class="form-group">
+                            <label for="ID" class="font-weight-bold" style="font-size: 18px;">ID:</label>
+                            <div>
+                                <input type="text" id="ID" name="ID"
+                                       th:value="${user.id}" readonly/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="username" class="font-weight-bold" style="font-size: 18px;">Username:</label>
+                            <div>
+                                <input type="text" id="username" name="username"
+                                       th:value="${user.username}" readonly/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password" class="font-weight-bold" style="font-size: 18px;">Password:</label>
+                            <div>
+                                <input type="password" id="password" name="password"
+                                       th:value="${user.password}" readonly/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="font-weight-bold" style="font-size: 18px;">Roles:</label>
+                            <div th:each="role : ${roles}">
+                                <input type="checkbox" id="role-${role.name}" name="roles"
+                                       th:value="${role.name}"
+                                       th:checked="${user.roles.contains(role)}" disabled="disabled"/>
+                                <label th:for="${'role-' + role.name}"
+                                       th:text="${role.getNameWithoutRole()}"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <form th:method="post" th:action="@{/admin/}">
+                        <input type="hidden" name="_method" th:value="delete"/>
+                        <input type="hidden" name="id" th:value="${user.id}"/>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                Cancel
+                            </button>
+                            <input type="submit" class="btn btn-danger" value="Delete"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-</div>
 </div>

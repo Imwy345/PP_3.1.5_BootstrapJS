@@ -56,13 +56,16 @@
         #modalToggle:checked ~ .modal {
             display: block;
         }
+
         .col-md-2 {
-                     padding-left: 0;
-                     padding-right: 0;
-                 }
+            padding-left: 0;
+            padding-right: 0;
+        }
+
         .col-md-10 {
             padding-left: 35px;
         }
+
         .admin-role {
             background-color: #007bff;
             color: white;
@@ -74,17 +77,19 @@
             margin: 0; /* удаление отступов от краев */
 
         }
+
         .user-role-link {
             /*display: block;*/
             width: 100%;
             height: 100%;
-            text-decoration: none; /* Опционально: убираем подчеркивание ссылки */
+            text-decoration: none;
             padding: 20px; /* добавление отступов внутри блока */
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0; /* удаление отступов от краев */
         }
+
         .user-role-link:hover {
             text-decoration: none; /* Убираем подчеркивание при наведении */
         }
@@ -96,7 +101,8 @@
 <div class="container-fluid main-container">
     <div class="row">
         <div class="col-md-2">
-            <div th:each="role : ${user.roles}" th:class="${role.getNameWithoutRole() == 'ADMIN'} ? 'admin-role' : (${role.getNameWithoutRole() == 'USER'} ? 'user-role' : '')">
+            <div th:each="role : ${user.roles}"
+                 th:class="${role.getNameWithoutRole() == 'ADMIN'} ? 'admin-role' : (${role.getNameWithoutRole() == 'USER'} ? 'user-role' : '')">
                 <a th:if="${role.getNameWithoutRole() == 'ADMIN'} ? 'admin-role'">
                     <div th:utext="ADMIN"></div>
                 </a>

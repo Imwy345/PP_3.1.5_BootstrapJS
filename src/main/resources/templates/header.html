@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-11" style="color: #ffffff;">
             <!-- Левая часть -->
-                    <span class="navbar-text">
+            <span class="navbar-text">
                         <span th:text="${user.username}"></span>
                         with roles:
                         <span th:each="role, iterStat : ${(user.roles)}">
@@ -12,7 +12,8 @@
                     </span>
         </div>
         <!-- Правая часть -->
-        <div class="col-md-1" style="color: #9a9a90; cursor: pointer; display: flex; align-items: center;" onclick="location.href='/logout';">
+        <div class="col-md-1" style="color: #9a9a90; cursor: pointer; display: flex; align-items: center;"
+             onclick="location.href='/logout';">
             Logout
         </div>
     </div>

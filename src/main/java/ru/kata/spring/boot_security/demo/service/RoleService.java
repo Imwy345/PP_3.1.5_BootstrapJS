@@ -11,7 +11,7 @@ public interface RoleService {
 
     Role findRoleByName(String roleName);
 
-    List<Role> validateRoles(List<String> roleNames);
+    Set<Role> validateRoles(List<String> roleNames);
 
     void saveRole(Role role);
 }

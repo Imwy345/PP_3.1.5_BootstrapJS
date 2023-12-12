@@ -7,13 +7,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Repository
-public class RoleDaoImpl implements RoleDao{
+public class RoleDaoImpl implements RoleDao {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -35,9 +34,10 @@ public class RoleDaoImpl implements RoleDao{
             return null;
         }
     }
+
     @Override
-    public List<Role> validateRoles(List<String> roleNames){
-        List<Role> roles = new ArrayList<>();
+    public Set<Role> validateRoles(List<String> roleNames) {
+        Set<Role> roles = new HashSet<>();
         for (String roleName : roleNames) {
             Role role = findRoleByName(roleName);
             if (role != null) {
@@ -48,6 +48,8 @@ public class RoleDaoImpl implements RoleDao{
     }
 
     @Override
-    public void saveRole(Role role) {entityManager.persist(role);}
+    public void saveRole(Role role) {
+        entityManager.persist(role);
+    }
 
 }

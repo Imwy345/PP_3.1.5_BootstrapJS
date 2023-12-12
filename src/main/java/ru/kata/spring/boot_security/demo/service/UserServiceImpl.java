@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     public boolean saveUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        return  userDao.saveUser(user);
+        return userDao.saveUser(user);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-            return userDao.findByUsername(username);
+        return userDao.findByUsername(username);
 
     }
 }

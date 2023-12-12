@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.dao.RoleDao;
 import ru.kata.spring.boot_security.demo.model.Role;
+
 import java.util.List;
 import java.util.Set;
 
@@ -28,11 +29,13 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<Role> validateRoles(List<String> roleNames){
+    public Set<Role> validateRoles(List<String> roleNames) {
         return roleDao.validateRoles(roleNames);
     }
 
     @Override
     @Transactional
-    public void saveRole(Role role) {roleDao.saveRole(role);}
+    public void saveRole(Role role) {
+        roleDao.saveRole(role);
+    }
 }
