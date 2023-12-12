@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,8 +36,8 @@ public class RoleDaoImpl implements RoleDao{
         }
     }
     @Override
-    public Set<Role> validateRoles(List<String> roleNames){
-        Set<Role> roles = new HashSet<>();
+    public List<Role> validateRoles(List<String> roleNames){
+        List<Role> roles = new ArrayList<>();
         for (String roleName : roleNames) {
             Role role = findRoleByName(roleName);
             if (role != null) {

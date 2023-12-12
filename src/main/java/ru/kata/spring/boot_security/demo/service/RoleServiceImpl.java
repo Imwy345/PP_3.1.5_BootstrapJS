@@ -28,7 +28,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Set<Role> validateRoles(List<String> roleNames){
+    public List<Role> validateRoles(List<String> roleNames){
         return roleDao.validateRoles(roleNames);
     }
 

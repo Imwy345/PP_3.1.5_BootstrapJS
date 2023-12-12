@@ -40,22 +40,7 @@ public class AdminController {
 
     @PostMapping("/")
     public String registerUser(@ModelAttribute("newUser") @Valid User newUser,
-                               @RequestParam("roles") List<String> roleNames,
-                               BindingResult bindingResult, Model model) {
-//        if (!newUser.getPassword().equals(newUser.getPasswordConfirm())) {
-//            model.addAttribute("passwordError", "Пароли не совпадают");
-//            model.addAttribute("roles",roleService.getAllRoles());
-//            return "addNewUser";
-//        }
-//        if (bindingResult.hasErrors()) {
-//            model.addAttribute("roles",roleService.getAllRoles());
-//            return "addNewUser";
-//        }
-//        if (!userService.saveUser(newUser)) {
-//            model.addAttribute("usernameError", "Пользователь с таким именем уже существует");
-//            model.addAttribute("roles",roleService.getAllRoles());
-//            return "addNewUser";
-//        } else {
+                               @RequestParam("roles") List<String> roleNames) {
         if(newUser!=null ){
             System.out.println("Username:" +newUser.getUsername() + " Password: " +newUser.getPassword());
         }
@@ -67,7 +52,6 @@ public class AdminController {
 
             return "redirect:/admin/";
         }
-//    }
 
     @PutMapping ("/")
     public String updateUser(@ModelAttribute("user") @Valid User user,

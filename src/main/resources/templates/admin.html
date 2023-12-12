@@ -66,7 +66,6 @@
         .admin-role {
             background-color: #007bff;
             color: white;
-            border-radius: 5px; /* закругление краев */
             padding: 10px; /* добавление отступов внутри блока */
             height: 50px; /* установка высоты блока */
             display: flex;
@@ -75,14 +74,19 @@
             margin: 0; /* удаление отступов от краев */
 
         }
-        .user-role {
-            padding: 10px; /* добавление отступов внутри блока */
-            height: 50px; /* установка высоты блока */
+        .user-role-link {
+            /*display: block;*/
+            width: 100%;
+            height: 100%;
+            text-decoration: none; /* Опционально: убираем подчеркивание ссылки */
+            padding: 20px; /* добавление отступов внутри блока */
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0; /* удаление отступов от краев */
-
+        }
+        .user-role-link:hover {
+            text-decoration: none; /* Убираем подчеркивание при наведении */
         }
     </style>
 </head>
@@ -93,16 +97,16 @@
     <div class="row">
         <div class="col-md-2">
             <div th:each="role : ${user.roles}" th:class="${role.getNameWithoutRole() == 'ADMIN'} ? 'admin-role' : (${role.getNameWithoutRole() == 'USER'} ? 'user-role' : '')">
-                <div th:utext="${role.getNameWithoutRole()}"></div>
+                <a th:if="${role.getNameWithoutRole() == 'ADMIN'} ? 'admin-role'">
+                    <div th:utext="ADMIN"></div>
+                </a>
+                <a th:if="${role.getNameWithoutRole() == 'USER'}" th:href="@{'/user/'}" class="user-role-link">
+                    <div th:utext="${role.getNameWithoutRole()}"></div>
+                </a>
             </div>
         </div>
         <div class="col-md-10">
             <h2>Admin panel</h2>
-            <nav>
-                <ul>
-                    <li><a th:href="@{/admin/new}">Add new user</a></li>
-                </ul>
-            </nav>
             <ul class="nav nav-tabs" id="myTabs">
                 <li class="nav-item">
                     <a class="nav-link active" id="usersTab" data-toggle="tab" href="#users">Users Table</a>
@@ -129,11 +133,7 @@
                         <tbody>
                         <tr th:each="user, iterStat : ${users}"
                             th:style="${iterStat.odd ? 'background-color: white;' : 'background-color: #f8f9fa;'}">
-
-                            <td>
-                                <a th:href="@{'/admin/' + ${user.id}}" th:utext="${user.id}"
-                                   style="color: black; cursor: pointer;">ID</a>
-                            </td>
+                            <td th:text="${user.id}"></td>
                             <td th:text="${user.username}"></td>
                             <td th:text="${user.password}"></td>
                             <td>

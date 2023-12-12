@@ -51,7 +51,7 @@ public class DataInitializer implements CommandLineRunner {
 
     private void createUser(String username, String password, List<String> roleNames) {
         User user = userService.findByUsername(username);
-        Set<Role> roles = null;
+        List<Role> roles = null;
         if( user == null) {
             roles = roleService.validateRoles(roleNames);
         }
