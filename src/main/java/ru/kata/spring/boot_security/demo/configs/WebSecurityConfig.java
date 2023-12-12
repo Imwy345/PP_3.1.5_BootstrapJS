@@ -30,7 +30,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
                     .authorizeRequests()
                     .antMatchers("/").not().fullyAuthenticated()
                     .antMatchers("/admin/**").hasAnyRole("ADMIN")
-                    .antMatchers("/user/**").hasAnyRole("USER")/*hasAnyRole("USER","ADMIN")*/
+                    .antMatchers("/user/**").hasAnyRole("USER","ADMIN")/*hasAnyRole("USER","ADMIN")*/
                     .anyRequest().authenticated()
                     .and()
                     .formLogin()

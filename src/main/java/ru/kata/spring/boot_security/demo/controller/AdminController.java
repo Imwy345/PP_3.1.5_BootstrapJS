@@ -38,8 +38,6 @@ public class AdminController {
         return "admin";
     }
 
-
-
     @PostMapping("/")
     public String registerUser(@ModelAttribute("newUser") @Valid User newUser,
                                @RequestParam("roles") List<String> roleNames,
@@ -71,57 +69,28 @@ public class AdminController {
         }
 //    }
 
-    @GetMapping("/{id}")
-    public String getUser(@PathVariable("id") long id, Model model) {
-        model.addAttribute("user", userService.getUserById(id));
-        return "userAdmin";
-    }
-
-    @GetMapping("/update/{id}")
-    public String showUpdateForm(@PathVariable("id") Long id, Model model) {
-        User user = userService.getUserById(id);
-        Set<Role> userRoles = user.getRoles();
-        List<String> roleNames = new ArrayList<>();
-
-        for (Role role : userRoles) {
-            roleNames.add(role.getName());
-        }
-
-        model.addAttribute("userForm", user);
-        model.addAttribute("roles", roleService.getAllRoles());
-        model.addAttribute("userRoles", roleNames);
-
-        return "update";
-    }
-
-    @PostMapping("/update/{id}")
-    public String updateUser(@ModelAttribute("userForm") @Valid User userForm,
+    @PutMapping ("/")
+    public String updateUser(@ModelAttribute("user") @Valid User user,
                              @RequestParam("roles") List<String> roleNames,
-                             @PathVariable("id") Long userId) {
+                             @RequestParam long id) {
 
-        User user = userService.getUserById(userId);
-        user.setRoles(roleService.validateRoles(roleNames));
-        user.setUsername(userForm.getUsername());
-        if (user.getPassword().equals(userForm.getPassword())) {
-            userService.updateUser(user);
+        User originUser = userService.getUserById(id);
+        originUser.setRoles(roleService.validateRoles(roleNames));
+        originUser.setUsername(user.getUsername());
+        if (originUser.getPassword().equals(user.getPassword())) {
+            userService.updateUser(originUser);
         } else {
-            user.setPassword(userForm.getPassword());
-            userService.saveUser(user);
+            originUser.setPassword(user.getPassword());
+            userService.saveUser(originUser);
         }
         return "redirect:/admin/";
 
     }
 
     @DeleteMapping("/")
-    public String deleteUser(@PathVariable("id") long id) {
+    public String deleteUser(@RequestParam long id) {
         userService.removeUser(id);
         return "redirect:/admin/";
     }
 }
-//    @GetMapping("/new")
-//    public String showRegistrationForm(Model model) {
-////        List<Role> roles = roleService.getAllRoles();
-//        model.addAttribute("userForm", new User());
-//        model.addAttribute("roles", roleService.getAllRoles());
-//        return "addNewUser";
-//    }
+

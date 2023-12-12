@@ -30,8 +30,8 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void initializeRoles() {
-        createRole("ROLE_USER");
         createRole("ROLE_ADMIN");
+        createRole("ROLE_USER");
     }
 
     private void createRole(String roleName) {
@@ -45,8 +45,8 @@ public class DataInitializer implements CommandLineRunner {
 
 
     private void initializeUsers() {
-        createUser("user", "user", Collections.singletonList("ROLE_USER"));
         createUser("admin", "admin", Arrays.asList("ROLE_ADMIN","ROLE_USER"));
+        createUser("user", "user", Collections.singletonList("ROLE_USER"));
     }
 
     private void createUser(String username, String password, List<String> roleNames) {

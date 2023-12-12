@@ -5,7 +5,7 @@
                     <span class="navbar-text">
                         <span th:text="${user.username}"></span>
                         with roles:
-                        <span th:each="role, iterStat : ${user.roles}">
+                        <span th:each="role, iterStat : ${(user.roles)}">
                             <span th:utext="${role.getNameWithoutRole()}"></span>
                             <span th:if="${!iterStat.last}"> </span>
                         </span>

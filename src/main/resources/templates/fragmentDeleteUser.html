@@ -1,0 +1,36 @@
+<div th:fragment="fragmentDeleteUser" th:remove="tag">
+
+<div class="modal fade" th:id="'deleteModal-' + ${user.id}" tabindex="-1" role="dialog"
+     aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Delete user</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p> ID: <span th:text="${user.id}" id="userIdSpan"></span></p>
+                <!-- Добавляем информацию о пользователе в модальное окно -->
+                <p>Username: <span th:text="${user.username}" id="usernameSpan"></span></p>
+                <p>Password: <span th:text="${user.password}" id="passwordSpan"></span></p>
+                <p>Roles: <span th:each="role, iterStat : ${user.roles}">
+                                                        <span th:utext="${role.getNameWithoutRole()}"></span>
+                                                        <span th:if="${!iterStat.last}"> </span>
+                                                     </span></p>
+            </div>
+            <form th:method="post" th:action="@{/admin/}">
+                <input type="hidden" name="_method" th:value="delete"/>
+                <input type="hidden" name="id" th:value="${user.id}"/>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Cancel
+                    </button>
+                    <input type="submit" class="btn btn-danger" value="Delete"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
