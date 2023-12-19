@@ -34,9 +34,17 @@ public class RoleDaoImpl implements RoleDao {
             return null;
         }
     }
+    @Override
+    public  Set<Role> proverkaRoles(Set<Role> roleNames){
+        Set<Role> userRoles = new HashSet<>();
+        for (Role role: roleNames){
+            userRoles.add(findRoleByName(role.getName()));
+        }
+        return userRoles;
+    }
 
     @Override
-    public Set<Role> validateRoles(List<String> roleNames) {
+    public Set<Role> validateRoles(Set<String> roleNames) {
         Set<Role> roles = new HashSet<>();
         for (String roleName : roleNames) {
             Role role = findRoleByName(roleName);
@@ -46,6 +54,8 @@ public class RoleDaoImpl implements RoleDao {
         }
         return roles;
     }
+
+
 
     @Override
     public void saveRole(Role role) {

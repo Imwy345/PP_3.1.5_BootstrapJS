@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Table</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <style>
+
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #modalToggle:checked ~ .modal {
+            display: block;
+        }
+
+        .col-md-2 {
+            height: 100vh;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .col-md-10 {
+            background-color: #f8f9fa;
+            height: 100vh;
+            padding-left: 35px;
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+        }
+
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #343a40;
+            color: #fff;
+        }
+
+    </style>
+
+
+</head>
+<body>
+<div class="container-fluid" style="background-color: #343a40;">
+    <div class="row">
+        <div class="col-md-11" style="color: #ffffff;">
+            <!-- Левая часть -->
+            <span class="navbar-text" id="user-info"></span>
+            with roles: <span id="user-roles"></span>
+        </div>
+        <!-- Правая часть -->
+        <div class="col-md-1" style="color: #9a9a90; cursor: pointer; display: flex; align-items: center;"
+             onclick="location.href='/logout';">
+            Logout
+        </div>
+    </div>
+</div>
+<div class="container-fluid main-container">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="nav-button-container">
+                <div class="nav-button" id="navButtonAdmin">
+                    <button class="btn btn-primary" style="width: 100%; border-radius: 0; padding: 5%; background-color: white; color: #9a9a90; border-color: white" onclick="window.location.href='/'">ADMIN</button>
+                </div>
+                <div class="nav-button"  id="navButtonUser">
+                    <button class="btn btn-primary" style="width: 100%; border-radius: 0; padding: 5%;">USER</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <h2>User info</h2>
+            </ul>
+            <div class="tab-content">
+                <!-- Users Table -->
+                <div class="tab-pane fade show active" id="users"
+                     style="border: 1px solid #ccc; border-radius: 10px; padding: 10px;">
+                    <div style="margin: 5px">
+                        <h2>Info table</h2>
+                    </div>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>USERNAME</th>
+                            <th>SURNAME</th>
+                            <th>AGE</th>
+                            <th>EMAIL</th>
+                            <th>ROLES</th>
+                        </tr>
+                        </thead>
+                        <tbody id="users-table">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>-->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchData();
+        headerUser();
+        navButton();
+    });
+    function fetchData() {
+        fetch('/user/api/authenticationUsera')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+                return response.json();
+            }).then(data => {
+            populateTable(data);
+        })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }
+    function populateTable(user) {
+        var tableBody = document.getElementById("users-table");
+
+        tableBody.innerHTML = "";
+
+        var row = tableBody.insertRow(0); //
+        row.insertCell(0).textContent = user.id;
+        row.insertCell(1).textContent = user.username;
+        row.insertCell(2).textContent = user.surname;
+        row.insertCell(3).textContent = user.age;
+        row.insertCell(4).textContent = user.email;
+
+        // Создаем ячейку для ролей и добавляем их
+        var rolesCell = row.insertCell(5);
+        if (user.roles && Array.isArray(user.roles)) {
+            user.roles.forEach((role, index) => {
+                rolesCell.textContent += role.nameWithoutRole;
+                if (index < user.roles.length - 1) {
+                    rolesCell.textContent += ' ';
+                }
+            });
+        }
+    }
+    function headerUser() {
+        fetch('/user/api/authenticationUsera')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+                return response.json();
+            }).then(data => {
+            var username = data.username;
+            var surname = data.surname;
+            var userInfoElement = document.getElementById('user-info');
+            var userRolesElement = document.getElementById('user-roles');
+            var roles = '';
+            if(userInfoElement) {
+                userInfoElement.textContent = `${username} ${surname}`;
+            }
+            data.roles.forEach((role, index) => {
+                roles+=role.nameWithoutRole;
+                if (index< data.roles.length - 1) {
+                    roles += ', '; // Добавляем запятую, если это не последняя роль
+                }
+            })
+            userRolesElement.textContent = roles;
+
+        }).catch(error => {
+            console.error('Error fetching user data:', error);
+        });
+    }
+    function navButton() {
+        fetch('/user/api/authenticationUsera')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+                return response.json();
+            }).then(data => {
+            var userRoles = data.roles.map(role => role.nameWithoutRole);
+            var navButtonAdmin = document.getElementById('navButtonAdmin');
+            var navButtonUser = document.getElementById('navButtonUser');
+
+            // Скрываем обе кнопки
+            navButtonAdmin.style.display = 'none';
+            navButtonUser.style.display = 'none';
+
+            var userRole = 'USER';
+            var adminRole = 'ADMIN';
+
+            data.roles.forEach((role) => {
+                if (role.nameWithoutRole === userRole) {
+                    navButtonUser.style.display = 'block'; // или 'flex', в зависимости от вашего дизайна
+                }
+
+                if (role.nameWithoutRole === adminRole) {
+                    navButtonAdmin.style.display = 'block'; // или 'flex', в зависимости от вашего дизайна
+                }
+            });
+        })
+            .catch(error => {
+                console.error('Error fetching user data:', error);
+            });
+    }
+</script>
+</body>
+</html>

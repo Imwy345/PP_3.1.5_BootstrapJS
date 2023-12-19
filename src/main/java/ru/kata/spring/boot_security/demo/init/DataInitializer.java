@@ -7,10 +7,7 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -45,11 +42,11 @@ public class DataInitializer implements CommandLineRunner {
 
 
     private void initializeUsers() {
-        createUser("admin", "admin", Arrays.asList("ROLE_ADMIN", "ROLE_USER"));
-        createUser("user", "user", Collections.singletonList("ROLE_USER"));
+        createUser("admin","adminishe","admin","admin@mail.com",28, new HashSet<>(Arrays.asList("ROLE_ADMIN", "ROLE_USER")));
+        createUser("user", "userishe","user","user@mail.com",35,new HashSet<>(Collections.singletonList("ROLE_USER")));
     }
 
-    private void createUser(String username, String password, List<String> roleNames) {
+    private void createUser(String username,String surname, String password,String email, int age, Set<String> roleNames) {
         User user = userService.findByUsername(username);
         Set<Role> roles = null;
         if (user == null) {
@@ -57,7 +54,10 @@ public class DataInitializer implements CommandLineRunner {
         }
         user = new User();
         user.setUsername(username);
+        user.setSurname(surname);
         user.setPassword(password);
+        user.setEmail(email);
+        user.setAge(age);
         user.setRoles(roles);
 
         userService.saveUser(user);

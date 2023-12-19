@@ -11,7 +11,7 @@ public interface RoleDao {
 
     Role findRoleByName(String roleName);
 
-    Set<Role> validateRoles(List<String> roleNames);
-
+    Set<Role> validateRoles(Set<String> roleNames);
+    Set<Role> proverkaRoles(Set<Role> roleNames);
     void saveRole(Role role);
 }

@@ -6,8 +6,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-    @Configuration
+@Configuration
     @EnableWebSecurity
     public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -25,23 +26,23 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
         @Override
         protected void configure(HttpSecurity httpSecurity) throws Exception {
             httpSecurity
-                    .csrf()
-                    .disable()
-                    .authorizeRequests()
-                    .antMatchers("/").authenticated()
-                    .antMatchers("/admin/**").hasAnyRole("ADMIN")
-                    .antMatchers("/user/**").hasAnyRole("USER","ADMIN")/*hasAnyRole("USER","ADMIN")*/
-                    .anyRequest().authenticated()
-                    .and()
                     .formLogin()
-//                    .loginPage("/login")
                     .successHandler(successUserHandler)
-                    .permitAll()
-                    .and()
-                    .logout()
-                    .logoutUrl("/logout")
-                    .logoutSuccessUrl("/")
+                    .loginProcessingUrl("/login")
+                    .usernameParameter("username")
+                    .passwordParameter("password")
                     .permitAll();
+            httpSecurity
+                    .authorizeRequests()
+                    .antMatchers("/login").anonymous()
+                    .antMatchers("/").access("hasRole('ROLE_ADMIN')")
+                    .antMatchers("/user/**").access("hasAnyRole('ROLE_USER','ROLE_ADMIN')").anyRequest().authenticated();
+            httpSecurity.logout()
+                    .permitAll()
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                    .logoutSuccessUrl("/login")
+                    .and().csrf().disable();
         }
+
 
     }

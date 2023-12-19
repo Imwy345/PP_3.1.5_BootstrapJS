@@ -47,8 +47,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public boolean saveUser(User user) {
+
+        System.out.println(user.getPassword());
+        System.out.println("user:"+bCryptPasswordEncoder.encode(user.getPassword()));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        return userDao.saveUser(user);
+        User user1 = user;
+        System.out.println("user1:"+user1.getPassword());
+        return userDao.saveUser(user1);
     }
 
     @Override

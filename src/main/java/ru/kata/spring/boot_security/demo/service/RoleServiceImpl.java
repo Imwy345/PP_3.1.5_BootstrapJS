@@ -29,10 +29,13 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Set<Role> validateRoles(List<String> roleNames) {
+    public Set<Role> validateRoles(Set<String> roleNames) {
         return roleDao.validateRoles(roleNames);
     }
-
+@Override
+    public Set<Role> proverkaRoles(Set<Role> roleNames){
+        return roleDao.proverkaRoles(roleNames);
+    }
     @Override
     @Transactional
     public void saveRole(Role role) {

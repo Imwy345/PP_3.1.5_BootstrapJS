@@ -10,8 +10,8 @@ public interface RoleService {
     List<Role> getAllRoles();
 
     Role findRoleByName(String roleName);
-
-    Set<Role> validateRoles(List<String> roleNames);
+    Set<Role> proverkaRoles(Set<Role> roleNames);
+    Set<Role> validateRoles(Set<String> roleNames);
 
     void saveRole(Role role);
 }
