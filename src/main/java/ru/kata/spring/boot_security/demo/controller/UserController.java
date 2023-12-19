@@ -23,7 +23,6 @@ public class UserController {
     }
     @GetMapping("/authenticationUsera")
     public ResponseEntity<User> getEmptyUser(Authentication authentication) {
-        System.out.println("authenticationUser прошел");
         return new ResponseEntity<>(userService.findByUsername(authentication.getName()), HttpStatus.OK);
     }
 }

@@ -62,15 +62,12 @@ public class AdminControllerJS {
     @PostMapping("/updateUser/")
     public ResponseEntity<String> updateUser(@RequestBody  User user){
         User originUser = userService.getUserById(user.getId());
-        originUser.setRoles(roleService.proverkaRoles(user.getRoles()));
         user.setRoles(roleService.proverkaRoles(user.getRoles()));
         if (originUser.getPassword().equals(user.getPassword())) {
             userService.updateUser(user);
         } else {
-            originUser.setPassword(user.getPassword());
-            userService.saveUser(user);
+            userService.updateUserChangePassword(user);
         }
         return new ResponseEntity<>("User successfully deleted", HttpStatus.OK);
-
     }
 }
