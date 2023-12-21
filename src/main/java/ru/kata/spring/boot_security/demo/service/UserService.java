@@ -17,9 +17,7 @@ public interface UserService {
 
     void updateUser(User user);
 
-    void updateUserChangePassword(User user);
-
-    boolean saveUser(User user);
+    void saveUser(User user);
 
     User findByUsername(String username);
 

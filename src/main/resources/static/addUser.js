@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function() {
             roles:selectedRoles,
         };
 
-        fetch('/api/saveUser', {
+        fetch('/api/save', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
         button = $(event.relatedTarget);
 
         var buttonId = button.data('user-id');
-        fetch('api/findUserById/' + buttonId)
+        fetch('api/users/' + buttonId)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`Network response was not ok: ${response.statusText}`);
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 email: emailValue,
                 roles: selectedRoles,
             };
-            fetch('/api/updateUser/', {
+            fetch('/api/update/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
         button = $(event.relatedTarget);
 
         var buttonId = button.data('user-id');
-        fetch('api/findUserById/' + buttonId)
+        fetch('api/users/' + buttonId)
             .then(response => {
                 return response.json();
             })
@@ -29,12 +29,22 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     }
                 });
+
+
+
             });
         $('#userDeleteConfrim').on('click', function (event) {
             event.preventDefault();
-            fetch('/api/deleteUser/' + buttonId, {
+            var data ={
+                id:$('#IdDeleteForm').val()
+            };
+            fetch('/api/delete/', {
                 method: 'DELETE',
-            }).then(response => {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                        body: JSON.stringify(data)
+        }).then(response => {
                 return response.text();
             })
                 .then(message => {

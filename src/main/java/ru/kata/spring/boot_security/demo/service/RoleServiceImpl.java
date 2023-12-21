@@ -19,22 +19,13 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    public List<Role> getAllRoles() {
-        return roleDao.getAllRoles();
-    }
-
-    @Override
     public Role findRoleByName(String roleName) {
         return roleDao.findRoleByName(roleName);
     }
 
-    @Override
-    public Set<Role> validateRoles(Set<String> roleNames) {
-        return roleDao.validateRoles(roleNames);
-    }
 @Override
-    public Set<Role> proverkaRoles(Set<Role> roleNames){
-        return roleDao.proverkaRoles(roleNames);
+    public Set<Role> checkRoles(Set<Role> roleNames){
+        return roleDao.checkRoles(roleNames);
     }
     @Override
     @Transactional

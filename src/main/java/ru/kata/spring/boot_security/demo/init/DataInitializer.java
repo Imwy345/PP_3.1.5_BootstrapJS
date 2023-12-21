@@ -42,24 +42,17 @@ public class DataInitializer implements CommandLineRunner {
 
 
     private void initializeUsers() {
-        createUser("admin","adminishe","admin","admin@mail.com",28, new HashSet<>(Arrays.asList("ROLE_ADMIN", "ROLE_USER")));
-        createUser("user", "userishe","user","user@mail.com",35,new HashSet<>(Collections.singletonList("ROLE_USER")));
+        createUser("admin","adminishe","admin@mail.com","admin",28, new HashSet<>(Arrays.asList("ROLE_ADMIN", "ROLE_USER")));
+        createUser("user", "userishe","user@mail.com","user",35,new HashSet<>(Collections.singletonList("ROLE_USER")));
     }
 
-    private void createUser(String username,String surname, String password,String email, int age, Set<String> roleNames) {
-        User user = userService.findByUsername(username);
-        Set<Role> roles = null;
-        if (user == null) {
-            roles = roleService.validateRoles(roleNames);
+    private void createUser(String username,String surname, String email, String password, int age, Set<String> roleNames) {
+        Set<Role> roles = new HashSet<>();
+        for(String roleName:roleNames){
+            Role role = roleService.findRoleByName(roleName);
+            roles.add(role);
         }
-        user = new User();
-        user.setUsername(username);
-        user.setSurname(surname);
-        user.setPassword(password);
-        user.setEmail(email);
-        user.setAge(age);
-        user.setRoles(roles);
-
+        User user = new User(username,surname,age,email,password,roles);
         userService.saveUser(user);
     }
 }

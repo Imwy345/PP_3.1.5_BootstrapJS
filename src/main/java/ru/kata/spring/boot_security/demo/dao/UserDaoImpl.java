@@ -36,25 +36,17 @@ public class UserDaoImpl implements UserDao {
         entityManager.merge(user);
 
     }
-    @Override
-    public void updateUserChangePassword(User user) {
-        entityManager.merge(user);
-
-    }
 
     @Override
-    public boolean saveUser(User user) {
+    public void saveUser(User user) {
         TypedQuery<User> userQuery = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class);
         userQuery.setParameter("username", user.getUsername());
-        System.out.println("ДАО Сохранение, должно быть зашифрованно: "+user.getPassword());
         try {
-            User userFromDB = userQuery.getSingleResult();
-            return false;
+        User userFromDB = userQuery.getSingleResult();
+        return;
         } catch (NoResultException e) {
         }
-        System.out.println("Сохранение прошло успешно");
         entityManager.persist(user);
-        return true;
     }
 
     @Override

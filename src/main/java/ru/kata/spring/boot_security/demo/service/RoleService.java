@@ -7,11 +7,7 @@ import java.util.Set;
 
 public interface RoleService {
 
-    List<Role> getAllRoles();
-
     Role findRoleByName(String roleName);
-    Set<Role> proverkaRoles(Set<Role> roleNames);
-    Set<Role> validateRoles(Set<String> roleNames);
-
+    Set<Role> checkRoles(Set<Role> roleNames);
     void saveRole(Role role);
 }

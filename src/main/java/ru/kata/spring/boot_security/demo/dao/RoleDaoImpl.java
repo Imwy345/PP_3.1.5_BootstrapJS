@@ -18,12 +18,6 @@ public class RoleDaoImpl implements RoleDao {
     private EntityManager entityManager;
 
     @Override
-    public List<Role> getAllRoles() {
-        TypedQuery<Role> query = entityManager.createQuery("SELECT r FROM Role r", Role.class);
-        return query.getResultList();
-    }
-
-    @Override
     public Role findRoleByName(String roleName) {
         TypedQuery<Role> roleQuery = entityManager.createQuery("SELECT r FROM Role r WHERE r.name = :name", Role.class);
         roleQuery.setParameter("name", roleName);
@@ -35,27 +29,13 @@ public class RoleDaoImpl implements RoleDao {
         }
     }
     @Override
-    public  Set<Role> proverkaRoles(Set<Role> roleNames){
+    public  Set<Role> checkRoles(Set<Role> roleNames){
         Set<Role> userRoles = new HashSet<>();
         for (Role role: roleNames){
             userRoles.add(findRoleByName(role.getName()));
         }
         return userRoles;
     }
-
-    @Override
-    public Set<Role> validateRoles(Set<String> roleNames) {
-        Set<Role> roles = new HashSet<>();
-        for (String roleName : roleNames) {
-            Role role = findRoleByName(roleName);
-            if (role != null) {
-                roles.add(role);
-            }
-        }
-        return roles;
-    }
-
-
 
     @Override
     public void saveRole(Role role) {

@@ -12,20 +12,20 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-public class AdminControllerJS {
+public class RestAdminController {
 
     private final UserService userService;
     private final RoleService roleService;
 
-    public AdminControllerJS(UserService userService, RoleService roleService) {
+    public RestAdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
 
-    @PostMapping("/saveUser")
+    @PostMapping("/save")
     public ResponseEntity<User> saveUser(@RequestBody User user) {
         System.out.println(user.getRoles());
-        user.setRoles(roleService.proverkaRoles(user.getRoles()));
+        user.setRoles(roleService.checkRoles(user.getRoles()));
         System.out.println(user.getRoles());
         userService.saveUser(user);
         return new ResponseEntity<>(user,HttpStatus.OK);
@@ -37,37 +37,30 @@ public class AdminControllerJS {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping("/authenticationUser")
-    public ResponseEntity<User> getEmptyUser(Authentication authentication) {
+    @GetMapping("/users/authentication")
+    public ResponseEntity<User> authenticationUser (Authentication authentication) {
         return new ResponseEntity<>(userService.findByUsername(authentication.getName()),HttpStatus.OK);
     }
 
-    @GetMapping("/findUserById/{id}")
+    @GetMapping("/users/{id}")
     public  ResponseEntity<User> findUserById(@PathVariable("id") Long id){
 
         User user = userService.getUserById(id);
         return new ResponseEntity<>(user,HttpStatus.OK);
     }
-    @DeleteMapping("/deleteUser/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
+    @DeleteMapping("/delete/")
+    public ResponseEntity<String> deleteUser(@RequestBody  User user) {
         try {
-            User user = userService.getUserById(id);
-            System.out.println(user.getUsername());
-            userService.removeUser(id);
+            userService.removeUser(user.getId());
             return new ResponseEntity<>("User successfully deleted", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error deleting user: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PostMapping("/updateUser/")
+    @PostMapping("/update/")
     public ResponseEntity<String> updateUser(@RequestBody  User user){
-        User originUser = userService.getUserById(user.getId());
-        user.setRoles(roleService.proverkaRoles(user.getRoles()));
-        if (originUser.getPassword().equals(user.getPassword())) {
+        user.setRoles(roleService.checkRoles(user.getRoles()));
             userService.updateUser(user);
-        } else {
-            userService.updateUserChangePassword(user);
-        }
         return new ResponseEntity<>("User successfully deleted", HttpStatus.OK);
     }
 }
